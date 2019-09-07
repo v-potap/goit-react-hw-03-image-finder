@@ -58,6 +58,7 @@
 
 .fullscreenButton i {
   font-size: 36px;
+  z-index: 200;
 }
 
 .galleryItem:hover .fullscreenButton,

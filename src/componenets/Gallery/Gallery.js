@@ -4,14 +4,25 @@ import PhotoCard from '../PhotoCard/PhotoCard';
 
 import st from './Gallery.module.css';
 
-function Gallery({ galleryItems, isLoading, toLoadMore }) {
+function Gallery({
+  showingModal,
+  galleryItems,
+  isLoading,
+  toLoadMore,
+  toToggleModal,
+}) {
   return (
     <>
       {galleryItems.length > 0 && (
         <>
           <ul className={st.gallery}>
             {galleryItems.map(galleryItem => (
-              <PhotoCard key={galleryItem.id} galleryItem={galleryItem} />
+              <PhotoCard
+                key={galleryItem.id}
+                galleryItem={galleryItem}
+                toToggleModal={toToggleModal}
+                showingModal={showingModal}
+              />
             ))}
           </ul>
           <button
@@ -21,7 +32,16 @@ function Gallery({ galleryItems, isLoading, toLoadMore }) {
             name="LoadMore"
             disabled={isLoading}
           >
-            {isLoading ? 'Loading ...' : 'Load more'}
+            {isLoading ? 'Loading ' : 'Load more'}
+            {isLoading ? (
+              <span className={st.spinner}>
+                <div className={st.bounce1} />
+                <div className={st.bounce2} />
+                <div className={st.bounce3} />
+              </span>
+            ) : (
+              ''
+            )}
           </button>
         </>
       )}

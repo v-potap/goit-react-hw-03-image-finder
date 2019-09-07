@@ -6,6 +6,7 @@ import styles from './App.module.css';
 
 import SearchForm from './SearchForm/SearchForm';
 import Gallery from './Gallery/Gallery';
+import Modal from './Modal/Modal';
 
 import * as imageAPI from '../services/images-api';
 
@@ -14,6 +15,8 @@ const INITIAL_STATE = {
   page: 1,
   q: '',
   loading: false,
+  showingModal: false,
+  largeImageURL: '',
 };
 
 class App extends Component {
@@ -37,7 +40,7 @@ class App extends Component {
     }));
 
     // await setTimeout(() => window.scrollBy(0, window.innerHeight), 2000);
-    window.scrollBy(0, window.innerHeight);
+    window.scrollBy(0, window.innerHeight - 100);
   };
 
   handleSearchSubmit = async e => {
@@ -56,21 +59,38 @@ class App extends Component {
 
     const { q, page } = this.state;
     const imageList = await imageAPI.getImageList({ q, page });
-
     this.setState({ galleryItems: imageList, loading: false });
   };
 
+  toggleModal = async (e, largeImageURL) => {
+    if (e.target === e.currentTarget || e instanceof KeyboardEvent) {
+      await this.setState(prevState => ({
+        showingModal: !prevState.showingModal,
+        largeImageURL,
+      }));
+    }
+  };
+
   render() {
-    const { galleryItems, loading } = this.state;
+    const { galleryItems, loading, showingModal, largeImageURL } = this.state;
 
     return (
       <div className={styles.app}>
         <SearchForm execOnSubmit={this.handleSearchSubmit} />
-        <Gallery
-          galleryItems={galleryItems}
-          isLoading={loading}
-          toLoadMore={this.handleLoadMoreClick}
-        />
+        {galleryItems === undefined ? (
+          <p>Network error ...</p>
+        ) : (
+          <Gallery
+            galleryItems={galleryItems}
+            isLoading={loading}
+            toLoadMore={this.handleLoadMoreClick}
+            toToggleModal={this.toggleModal}
+            showingModal={showingModal}
+          />
+        )}
+        {showingModal && (
+          <Modal toToggleModal={this.toggleModal} srcURL={largeImageURL} />
+        )}
         <ToastContainer />
       </div>
     );

@@ -14,9 +14,11 @@ function PhotoCard(props) {
     tags,
   } = props.galleryItem;
 
+  const { showingModal, toToggleModal } = props;
+
   return (
     <li className={st.galleryItem}>
-      <div className={st.PhotoCard}>
+      <div className={st.photoCard}>
         <img src={webformatURL} alt={`${type} with tags: ${tags}`} />
 
         <div className={st.stats}>
@@ -38,14 +40,24 @@ function PhotoCard(props) {
           </p>
         </div>
 
-        <button type="button" className={st.fullscreenButton}>
-          <i className="material-icons">zoom_out_map</i>
-        </button>
+        {!showingModal && (
+          <button type="button" className={st.fullscreenButton}>
+            <i
+              className="material-icons"
+              onClick={e => toToggleModal(e, largeImageURL)}
+            >
+              zoom_out_map
+            </i>
+          </button>
+        )}
       </div>
     </li>
   );
 }
 
-PhotoCard.propTypes = {};
+PhotoCard.propTypes = {
+  showingModal: PropTypes.bool.isRequired,
+  toToggleModal: PropTypes.func.isRequired,
+};
 
 export default PhotoCard;
